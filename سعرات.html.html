@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سعرات أحمد اليومية</title>
+    
+    <!-- الأيقونات المخصصة للشاشة الرئيسية والـ Favicon بالصورة الجديدة -->
+    <link rel="apple-touch-icon" href="https://i.ibb.co/gMdqQrrR/IMG-3377.jpg">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/gMdqQrrR/IMG-3377.jpg">
+
+    <!-- خط العربي Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Html2Canvas لميزة مشاركة الشاشة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #090d16;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-glass: rgba(15, 23, 42, 0.7);
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.3);
+            --accent: #34d399;
+            --accent-glow: rgba(52, 211, 153, 0.3);
+            --danger: #f87171;
+            --danger-glow: rgba(248, 113, 113, 0.3);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(rgba(9, 13, 22, 0.88), rgba(9, 13, 22, 0.96)), 
+                        url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* حاوية فول سكرين بدون حواف بيضاء */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 18px;
+            padding-top: 10px;
+        }
+
+        header h1 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #38bdf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* كارت بستايل Liquid Glass متطور مع أنيميشن خفيف */
+        .card {
+            background: var(--card-glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            animation: fadeInCard 0.6s ease-out;
+        }
+
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .goal-setting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .goal-setting input {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            width: 90px;
+            text-align: center;
+            font-weight: bold;
+            outline: none;
+        }
+
+        /* --- عداد السعرات الدائري المائل بنبض النار المتحرك --- */
+        .circular-progress-wrapper {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 10px auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circular-progress-wrapper svg {
+            width: 180px;
+            height: 180px;
+            transform: rotate(-90deg);
+        }
+
+        .circular-progress-wrapper circle {
+            fill: none;
+            stroke-width: 14;
+            stroke-linecap: round;
+        }
+
+        .circle-bg {
+            stroke: rgba(255, 255, 255, 0.05);
+        }
+
+        .circle-progress {
+            stroke: url(#gradient);
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 10px var(--accent-glow));
+        }
+
+        .center-fire-content {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .fire-emoji {
+            font-size: 2.2rem;
+            animation: firePulse 1.5s infinite ease-in-out;
+            filter: drop-shadow(0 0 12px rgba(248, 113, 113, 0.6));
+        }
+
+        @keyframes firePulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(248, 113, 113, 0.4)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 18px rgba(248, 113, 113, 0.8)); }
+        }
+
+        .center-fire-content span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* أرقام المكتسب والصافي والمتبقي أسفل الدائرة بشكل فخم */
+        .stats-grid-below {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.025);
+            padding: 12px 8px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+            transform: translateY(0);
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-box strong {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        /* التبويبات بستايل سائل متحرك */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 80px;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 11px 6px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(52, 211, 153, 0.25));
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 20px var(--primary-glow);
+            transform: scale(1.02);
+        }
+
+        .section-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .section-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 16px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            background: rgba(15, 23, 42, 0.85);
+        }
+
+        .btn-main {
+            width: 100%;
+            background: linear-gradient(135deg, #34d399, #059669);
+            color: #064e3b;
+            border: none;
+            padding: 13px;
+            border-radius: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 20px var(--accent-glow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 6px;
+        }
+
+        .btn-main:active {
+            transform: scale(0.97);
+        }
+
+        /* مربعات التمارين التفاعلية (Liquid Glass) */
+        .workout-box-item {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--card-border);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(12px);
+            transition: border-color 0.3s;
+        }
+
+        .workout-box-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .workout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .workout-title {
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .pb-badge {
+            font-size: 0.72rem;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.12);
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            width: fit-content;
+        }
+
+        .workout-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .btn-check {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        .btn-check.selected {
+            background: #34d399;
+            color: #064e3b;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn-cross {
+            background: rgba(248, 113, 113, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .btn-cross.selected {
+            background: #f87171;
+            color: #7f1d1d;
+            box-shadow: 0 0 15px var(--danger-glow);
+        }
+
+        .workout-input-area {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--card-border);
+            animation: fadeInCard 0.3s ease;
+        }
+
+        .workout-input-area.active {
+            display: block;
+        }
+
+        .rest-message {
+            display: none;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        .rest-message.active {
+            display: block;
+        }
+
+        .suggestion-box {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 16px;
+        }
+
+        .suggestion-box h3 {
+            font-size: 0.94rem;
+            color: #38bdf8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .suggestion-box p {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .gps-panel {
+            background: rgba(52, 211, 153, 0.06);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .gps-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 12px 0;
+        }
+
+        .gps-stat-item span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .gps-stat-item strong {
+            font-size: 1.15rem;
+            color: #34d399;
+        }
+
+        .list-container {
+            margin-top: 14px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .list-item {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid var(--card-border);
+            padding: 12px 16px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            animation: fadeInCard 0.3s ease;
+        }
+
+        .list-item .delete-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .share-btn-container {
+            margin-top: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.85), rgba(109, 40, 217, 0.95));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 13px 24px;
+            border-radius: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.98rem;
+            backdrop-filter: blur(12px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="capture-area">
+        <header>
+            <h1><i class="fa-solid fa-fire"></i> سعرات أحمد اليومية</h1>
+            <p>تتبّع ذكي، أرقام قياسية، وسعرات محسوبة بدقة</p>
+        </header>
+
+        <!-- الكارت العام والملخص بالدائرة المائلة -->
+        <div class="card">
+            <div class="goal-setting">
+                <span><i class="fa-solid fa-bullseye"></i> السعرات المستهدفة:</span>
+                <input type="number" id="dailyGoalInput" value="1600" onchange="updateGoal()">
+            </div>
+
+            <!-- عداد السعرات الدائري المتحرك والمائل مع إيموجي النار النابض -->
+            <div class="circular-progress-wrapper">
+                <svg>
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#38bdf8" />
+                            <stop offset="100%" stop-color="#34d399" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="circle-bg" cx="90" cy="90" r="70"></circle>
+                    <circle class="circle-progress" id="circleProgress" cx="90" cy="90" r="70"></circle>
+                </svg>
+                <div class="center-fire-content">
+                    <div class="fire-emoji">🔥</div>
+                    <span id="progressPercent">0%</span>
+                </div>
+            </div>
+
+            <!-- أرقام المكتسب والصافي والمتبقي تحت الدائرة -->
+            <div class="stats-grid-below">
+                <div class="stat-box">
+                    <span>المكتسب</span>
+                    <strong id="totalConsumed" style="color: #38bdf8;">0</strong>
+                </div>
+                <div class="stat-box">
+                    <span>المحروق (رياضة)</span>
+                    <strong id="totalBurned" style="color: #f87171;">0</strong>
+                </div>
+                <div class="stat-box">
+                    <span>الصافي / المتبقي</span>
+                    <strong id="netCalories" style="color: #34d399;">1600</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار التبديل والتبويبات -->
+        <div class="tabs">
+            <div class="tab-btn active" onclick="switchTab('food')"><i class="fa-solid fa-utensils"></i> الأكل</div>
+            <div class="tab-btn" onclick="switchTab('suggestions')"><i class="fa-solid fa-lightbulb"></i> المقترحات</div>
+            <div class="tab-btn" onclick="switchTab('schedule')"><i class="fa-solid fa-square-check"></i> التمارين والأرقام</div>
+            <div class="tab-btn" onclick="switchTab('workout')"><i class="fa-solid fa-person-walking"></i> المشي والـ GPS</div>
+        </div>
+
+        <!-- قسم الأكل -->
+        <div id="foodSection" class="section-content active">
+            <div class="card">
+                <div class="form-group">
+                    <label>اختر وجبة جاهزة أو أضف يدوياً:</label>
+                    <select id="foodPresetSelect" onchange="fillFoodData()">
+                        <option value="">-- اختر طعاماً مخصصاً --</option>
+                        <option value="أرز أبيض مطبوخ|130">أرز أبيض (100جم) - 130 سعرة</option>
+                        <option value="قهوة بالحليب وسكر|120">قهوة بالحليب ومعلقة سكر (كوب) - 120 سعرة</option>
+                        <option value="صدر دجاج مشوي|165">صدر دجاج مشوي (100جم) - 165 سعرة</option>
+                        <option value="بيضة مسلوقة|78">بيضة مسلوقة (واحدة) - 78 سعرة</option>
+                        <option value="موزة متوسطة|105">موزة متوسطة - 105 سعرة</option>
+                        <option value="رغيف عيش بلدي|270">رغيف عيش بلدي - 270 سعرة</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>اسم الأكل:</label>
+                    <input type="text" id="foodName" placeholder="مثال: وجبة غداء، نسكافيه...">
+                </div>
+
+                <div class="form-group">
+                    <label>عدد السعرات الحرارية:</label>
+                    <input type="number" id="foodCalories" placeholder="مثال: 350">
+                </div>
+
+                <button class="btn-main" onclick="addFood()"><i class="fa-solid fa-plus"></i> إضافة للأكل اليومي</button>
+
+                <div class="list-container" id="foodList"></div>
+            </div>
+        </div>
+
+        <!-- قسم اقتراحات الأكل الذكي -->
+        <div id="suggestionsSection" class="section-content">
+            <div class="card">
+                <div class="suggestion-box">
+                    <h3><i class="fa-solid fa-circle-info"></i> وجبات ذكية (بروتين عالي / سعرات قليلة)</h3>
+                    <p>اخترنا لك وجبات تساعدك على الشبع وبناء عضلاتك بدون حرمان:</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div class="list-item" style="justify-content: space-between;">
+                        <div>
+                            <strong>سلطة تونة بالليمون والزيتون</strong>
+                            <span style="display: block; font-size: 0.72rem; color: var(--text-muted);">علبة تونة + خضار (~200 سعرة، 25ج بروتين)</span>
+                        </div>
+                        <button class="btn-main" style="width: auto; padding: 6px 12px; font-size: 0.78rem; margin:0;" onclick="quickAddFood('سلطة تونة بالليمون', 200)"><i class="fa-solid fa-plus"></i> إضافة</button>
+                    </div>
+
+                    <div class="list-item" style="justify-content: space-between;">
+                        <div>
+                            <strong>صدر دجاج مشوي مع خضار سوتيه</strong>
+                            <span style="display: block; font-size: 0.72rem; color: var(--text-muted);">150جم دجاج + خضار (~230 سعرة، 35ج بروتين)</span>
+                        </div>
+                        <button class="btn-main" style="width: auto; padding: 6px 12px; font-size: 0.78rem; margin:0;" onclick="quickAddFood('دجاج مشوي مع خضار', 230)"><i class="fa-solid fa-plus"></i> إضافة</button>
+                    </div>
+
+                    <div class="list-item" style="justify-content: space-between;">
+                        <div>
+                            <strong>جبنة قريش بالطماطم وزيت الزيتون</strong>
+                            <span style="display: block; font-size: 0.72rem; color: var(--text-muted);">150جم جبنة قريش + طماطم (~170 سعرة، 20ج بروتين)</span>
+                        </div>
+                        <button class="btn-main" style="width: auto; padding: 6px 12px; font-size: 0.78rem; margin:0;" onclick="quickAddFood('جبنة قريش وطماطم', 170)"><i class="fa-solid fa-plus"></i> إضافة</button>
+                    </div>
+
+                    <div class="list-item" style="justify-content: space-between;">
+                        <div>
+                            <strong>أومليت ببيضتين وخضار</strong>
+                            <span style="display: block; font-size: 0.72rem; color: var(--text-muted);">بيضان + فلفل ومشروم (~180 سعرة، 14ج بروتين)</span>
+                        </div>
+                        <button class="btn-main" style="width: auto; padding: 6px 12px; font-size: 0.78rem; margin:0;" onclick="quickAddFood('أومليت ببيضتين وخضار', 180)"><i class="fa-solid fa-plus"></i> إضافة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم التمارين والأرقام القياسية -->
+        <div id="scheduleSection" class="section-content">
+            <div class="card">
+                <div class="suggestion-box" style="background: rgba(52, 211, 153, 0.05); border-color: rgba(52, 211, 153, 0.3);">
+                    <h3 style="color: #34d399;"><i class="fa-solid fa-trophy"></i> الأرقام القياسية (Personal Records)</h3>
+                    <p>دوس على (✔️) لتسجيل عَدّاتك (حرق سعرات + تسجيل رقم قياسي)، أو (❌) ليوم راحة.</p>
+                </div>
+
+                <!-- تمرين السكوات -->
+                <div class="workout-box-item" id="item_squat">
+                    <div class="workout-header">
+                        <div class="workout-title">
+                            <span><i class="fa-solid fa-dumbbell"></i> تمرين السكوات والأرجل</span>
+                            <span class="pb-badge" id="pb_text_squat">🏆 أفضل رقم: 0 عدة</span>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="action-btn btn-check" id="btn_check_squat" onclick="toggleWorkoutOption('squat', 'check')"><i class="fa-solid fa-check"></i></button>
+                            <button class="action-btn btn-cross" id="btn_cross_squat" onclick="toggleWorkoutOption('squat', 'cross')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div class="workout-input-area" id="input_area_squat">
+                        <label>كم عدة عملت النهاردة في السكوات؟</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="val_squat" placeholder="مثال: 150">
+                            <button class="btn-main" style="width: auto; margin:0; padding: 0 15px;" onclick="saveWorkoutCount('السكوات', 'squat', 'val_squat', 50)">حفظ</button>
+                        </div>
+                    </div>
+                    <div class="rest-message" id="rest_msg_squat">🍃 يوم راحة من تمرين السكوات النهاردة.</div>
+                </div>
+
+                <!-- تمارين البطن والكرنش -->
+                <div class="workout-box-item" id="item_abs">
+                    <div class="workout-header">
+                        <div class="workout-title">
+                            <span><i class="fa-solid fa-fire"></i> تمارين البطن والكرنش</span>
+                            <span class="pb-badge" id="pb_text_abs">🏆 أفضل رقم: 0 عدة</span>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="action-btn btn-check" id="btn_check_abs" onclick="toggleWorkoutOption('abs', 'check')"><i class="fa-solid fa-check"></i></button>
+                            <button class="action-btn btn-cross" id="btn_cross_abs" onclick="toggleWorkoutOption('abs', 'cross')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div class="workout-input-area" id="input_area_abs">
+                        <label>كم عدة عملت النهاردة في البطن؟</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="val_abs" placeholder="مثال: 40">
+                            <button class="btn-main" style="width: auto; margin:0; padding: 0 15px;" onclick="saveWorkoutCount('البطن والكرنش', 'abs', 'val_abs', 40)">حفظ</button>
+                        </div>
+                    </div>
+                    <div class="rest-message" id="rest_msg_abs">🍃 يوم راحة من تمارين البطن النهاردة.</div>
+                </div>
+
+                <!-- تمارين الضغط -->
+                <div class="workout-box-item" id="item_pushup">
+                    <div class="workout-header">
+                        <div class="workout-title">
+                            <span><i class="fa-solid fa-hand-fist"></i> تمارين الضغط (Push-ups)</span>
+                            <span class="pb-badge" id="pb_text_pushup">🏆 أفضل رقم: 0 عدة</span>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="action-btn btn-check" id="btn_check_pushup" onclick="toggleWorkoutOption('pushup', 'check')"><i class="fa-solid fa-check"></i></button>
+                            <button class="action-btn btn-cross" id="btn_cross_pushup" onclick="toggleWorkoutOption('pushup', 'cross')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div class="workout-input-area" id="input_area_pushup">
+                        <label>كم عدة عملت النهاردة في الضغط؟</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="val_pushup" placeholder="مثال: 30">
+                            <button class="btn-main" style="width: auto; margin:0; padding: 0 15px;" onclick="saveWorkoutCount('الضغط', 'pushup', 'val_pushup', 45)">حفظ</button>
+                        </div>
+                    </div>
+                    <div class="rest-message" id="rest_msg_pushup">🍃 يوم راحة من تمارين الضغط النهاردة.</div>
+                </div>
+
+                <!-- تمرين البلانك -->
+                <div class="workout-box-item" id="item_plank">
+                    <div class="workout-header">
+                        <div class="workout-title">
+                            <span><i class="fa-solid fa-stopwatch"></i> تمرين البلانك (بالثواني)</span>
+                            <span class="pb-badge" id="pb_text_plank">🏆 أفضل رقم: 0 ثانية</span>
+                        </div>
+                        <div class="workout-actions">
+                            <button class="action-btn btn-check" id="btn_check_plank" onclick="toggleWorkoutOption('plank', 'check')"><i class="fa-solid fa-check"></i></button>
+                            <button class="action-btn btn-cross" id="btn_cross_plank" onclick="toggleWorkoutOption('plank', 'cross')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div class="workout-input-area" id="input_area_plank">
+                        <label>كم ثانية/دقيقة عملت بلانك النهاردة؟</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="val_plank" placeholder="مثال: 120 ثانية">
+                            <button class="btn-main" style="width: auto; margin:0; padding: 0 15px;" onclick="saveWorkoutCount('البلانك', 'plank', 'val_plank', 35)">حفظ</button>
+                        </div>
+                    </div>
+                    <div class="rest-message" id="rest_msg_plank">🍃 يوم راحة من البلانك النهاردة.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- قسم التمارين والمشي (GPS دائم بالخلفية) -->
+        <div id="workoutSection" class="section-content">
+            <div class="card">
+                <div class="gps-panel">
+                    <h3 style="font-size: 0.94rem; color: #34d399; margin-bottom: 4px;"><i class="fa-solid fa-person-walking"></i> تتبع المشي والخطوات (يعمل بالخلفية دائماً)</h3>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">حتى لو خرجت من التطبيق، الـ GPS والمستشعرات ستظل تحسب خطواتك بدقة.</p>
+                    
+                    <div class="gps-stats">
+                        <div class="gps-stat-item">
+                            <span>المسافة</span>
+                            <strong id="gpsDistance">0.00 كم</strong>
+                        </div>
+                        <div class="gps-stat-item">
+                            <span>الخطوات</span>
+                            <strong id="gpsSteps">0 خطوة</strong>
+                        </div>
+                        <div class="gps-stat-item">
+                            <span>السعرات المحروقة</span>
+                            <strong id="gpsBurned">0 سعرة</strong>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button class="btn-main" onclick="startBackgroundTracking()" style="background: #38bdf8; color:#0f172a; margin:0;"><i class="fa-solid fa-play"></i> تفعيل التتبع الدائم</button>
+                        <button class="btn-main" onclick="stopAndSaveGpsWorkout()" style="background: #34d399; color:#064e3b; margin:0;"><i class="fa-solid fa-check"></i> حفظ كتمارين</button>
+                        <button class="btn-main" onclick="resetGpsTracking()" style="background: #f87171; color:#7f1d1d; margin:0;"><i class="fa-solid fa-rotate-right"></i> إعادة</button>
+                    </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 16px 0;">
+
+                <div class="form-group">
+                    <label>أو أضف تمريناً يدوياً:</label>
+                    <select id="workoutPresetSelect" onchange="fillWorkoutData()">
+                        <option value="">-- اختر تمريناً مخصصاً --</option>
+                        <option value="جري خفيف (15 دقيقة)|150">جري خفيف (15 دقيقة) - 150 سعرة</option>
+                        <option value="مشي سريع (20 دقيقة)|100">مشي سريع (20 دقيقة) - 100 سعرة</option>
+                        <option value="نط الحبل (10 دقائق)|120">نط الحبل (10 دقائق) - 120 سعرة</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>اسم التمرين:</label>
+                    <input type="text" id="workoutName" placeholder="مثال: جري، سباحة...">
+                </div>
+
+                <div class="form-group">
+                    <label>السعرات المحروقة:</label>
+                    <input type="number" id="workoutCalories" placeholder="مثال: 100">
+                </div>
+
+                <button class="btn-main" style="background: linear-gradient(135deg, #f87171, #dc2626); color: #fff;" onclick="addWorkout()"><i class="fa-solid fa-fire-flame-curved"></i> تسجيل السعرات المحروقة</button>
+
+                <div class="list-container" id="workoutList"></div>
+            </div>
+        </div>
+
+        <!-- زر مشاركة الشاشة -->
+        <div class="share-btn-container">
+            <button class="share-btn" onclick="screenShare()"><i class="fa-solid fa-camera-retro"></i> التقاط ومشاركة ملخص اليوم</button>
+        </div>
+    </div>
+
+    <script>
+        const FIREBASE_URL = "https://chat-ahmed-cb516-default-rtdb.firebaseio.com/";
+        
+        let clientIpKey = localStorage.getItem('ahmed_device_ip_key');
+        let dailyGoal = 1600;
+        let foods = [];
+        let workouts = [];
+        let workoutStates = {};
+        let personalRecords = { squat: 0, abs: 0, pushup: 0, plank: 0 };
+        let sessionDistance = 0;
+
+        function getCurrentDateKey() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        const todayKey = getCurrentDateKey();
+
+        // جلب الـ IP الخاص بالجهاز لتثبيت البيانات لكل موبايل على حدة
+        async function initDeviceSession() {
+            if (!clientIpKey) {
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    // تحويل الـ IP ليطابق صيغة مفاتيح Firebase (استبدال النقاط بشرطة)
+                    clientIpKey = data.ip.replace(/\./g, '_');
+                    localStorage.setItem('ahmed_device_ip_key', clientIpKey);
+                } catch (e) {
+                    // في حال عدم توفر الاتصال بالإنترنت لجلب الـ IP، يتم توليد معرف فريد مؤقت للجهاز
+                    clientIpKey = 'device_' + Math.random().toString(36).substring(2, 10);
+                    localStorage.setItem('ahmed_device_ip_key', clientIpKey);
+                }
+            }
+            loadDataFromFirebase();
+        }
+
+        function loadDataFromFirebase() {
+            fetch(`${FIREBASE_URL}/devices/${clientIpKey}/current_day/${todayKey}.json`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data) {
+                        dailyGoal = data.goal !== undefined ? data.goal : 1600;
+                        foods = data.foods || [];
+                        workouts = data.workouts || [];
+                        workoutStates = data.workoutStates || {};
+                        personalRecords = data.personalRecords || { squat: 0, abs: 0, pushup: 0, plank: 0 };
+                        sessionDistance = data.sessionDistance || 0;
+                    } else {
+                        // محاولة الاستعادة من الـ LocalStorage القديم كاحتياطي أول مرة
+                        dailyGoal = localStorage.getItem('ahmed_goal') ? parseInt(localStorage.getItem('ahmed_goal')) : 1600;
+                        foods = JSON.parse(localStorage.getItem('ahmed_foods')) || [];
+                        workouts = JSON.parse(localStorage.getItem('ahmed_workouts')) || [];
+                        workoutStates = JSON.parse(localStorage.getItem('ahmed_workout_states')) || {};
+                        personalRecords = JSON.parse(localStorage.getItem('ahmed_personal_records')) || { squat: 0, abs: 0, pushup: 0, plank: 0 };
+                        sessionDistance = parseFloat(localStorage.getItem('ahmed_session_distance')) || 0;
+                        syncToFirebase();
+                    }
+                    document.getElementById('dailyGoalInput').value = dailyGoal;
+                    renderWorkoutStatesUI();
+                    updateGpsDisplay();
+                    updateUI();
+                })
+                .catch(err => {
+                    console.log('Firebase load error:', err);
+                    updateUI();
+                });
+        }
+
+        function updateGoal() {
+            const val = parseInt(document.getElementById('dailyGoalInput').value);
+            if(val > 0) {
+                dailyGoal = val;
+                localStorage.setItem('ahmed_goal', dailyGoal);
+                syncToFirebase();
+                updateUI();
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+
+            if(tab === 'food') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('foodSection').classList.add('active');
+            } else if(tab === 'suggestions') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('suggestionsSection').classList.add('active');
+            } else if(tab === 'schedule') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('scheduleSection').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[3].classList.add('active');
+                document.getElementById('workoutSection').classList.add('active');
+            }
+        }
+
+        function fillFoodData() {
+            const select = document.getElementById('foodPresetSelect');
+            if(!select.value) return;
+            const parts = select.value.split('|');
+            document.getElementById('foodName').value = parts[0];
+            document.getElementById('foodCalories').value = parts[1];
+        }
+
+        function fillWorkoutData() {
+            const select = document.getElementById('workoutPresetSelect');
+            if(!select.value) return;
+            const parts = select.value.split('|');
+            document.getElementById('workoutName').value = parts[0];
+            document.getElementById('workoutCalories').value = parts[1];
+        }
+
+        function syncToFirebase() {
+            if (!clientIpKey) return;
+            const currentData = { foods, workouts, goal: dailyGoal, workoutStates, personalRecords, sessionDistance };
+            fetch(`${FIREBASE_URL}/devices/${clientIpKey}/current_day/${todayKey}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(currentData)
+            }).catch(err => console.log('Sync error:', err));
+        }
+
+        function addFood() {
+            const name = document.getElementById('foodName').value.trim();
+            const calories = parseInt(document.getElementById('foodCalories').value);
+
+            if(!name || isNaN(calories) || calories <= 0) {
+                alert('من فضلك ادخل اسم الطعام والسعرات بشكل صحيح.');
+                return;
+            }
+
+            foods.push({ id: Date.now(), name, calories });
+            localStorage.setItem('ahmed_foods', JSON.stringify(foods));
+            syncToFirebase();
+
+            document.getElementById('foodName').value = '';
+            document.getElementById('foodCalories').value = '';
+            document.getElementById('foodPresetSelect').value = '';
+            updateUI();
+        }
+
+        function quickAddFood(name, calories) {
+            foods.push({ id: Date.now(), name, calories });
+            localStorage.setItem('ahmed_foods', JSON.stringify(foods));
+            syncToFirebase();
+            updateUI();
+            alert(`تمت إضافة "${name}" (${calories} سعرة) بنجاح!`);
+        }
+
+        function deleteFood(id) {
+            foods = foods.filter(item => item.id !== id);
+            localStorage.setItem('ahmed_foods', JSON.stringify(foods));
+            syncToFirebase();
+            updateUI();
+        }
+
+        function toggleWorkoutOption(name, type) {
+            if(!workoutStates[name]) {
+                workoutStates[name] = { type: null };
+            }
+
+            if(workoutStates[name].type === type) {
+                workoutStates[name].type = null;
+            } else {
+                workoutStates[name].type = type;
+            }
+
+            localStorage.setItem('ahmed_workout_states', JSON.stringify(workoutStates));
+            syncToFirebase();
+            renderWorkoutStatesUI();
+        }
+
+        function renderWorkoutStatesUI() {
+            const items = ['squat', 'abs', 'pushup', 'plank'];
+            items.forEach(item => {
+                const checkBtn = document.getElementById(`btn_check_${item}`);
+                const crossBtn = document.getElementById(`btn_cross_${item}`);
+                const inputArea = document.getElementById(`input_area_${item}`);
+                const restMsg = document.getElementById(`rest_msg_${item}`);
+                const pbText = document.getElementById(`pb_text_${item}`);
+
+                if(pbText) {
+                    const record = personalRecords[item] || 0;
+                    const unit = item === 'plank' ? 'ثانية' : 'عدة';
+                    pbText.innerText = `🏆 أفضل رقم: ${record} ${unit}`;
+                }
+
+                if(checkBtn) checkBtn.classList.remove('selected');
+                if(crossBtn) crossBtn.classList.remove('selected');
+                if(inputArea) inputArea.classList.remove('active');
+                if(restMsg) restMsg.classList.remove('active');
+
+                if(workoutStates[item] && workoutStates[item].type) {
+                    if(workoutStates[item].type === 'check') {
+                        if(checkBtn) checkBtn.classList.add('selected');
+                        if(inputArea) inputArea.classList.add('active');
+                    } else if(workoutStates[item].type === 'cross') {
+                        if(crossBtn) crossBtn.classList.add('selected');
+                        if(restMsg) restMsg.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        function saveWorkoutCount(exerciseDisplayName, exerciseKey, inputId, baseCal) {
+            const count = parseInt(document.getElementById(inputId).value);
+            if(isNaN(count) || count <= 0) {
+                alert('من فضلك ادخل عدد العَدّات بشكل صحيح.');
+                return;
+            }
+
+            const currentPB = personalRecords[exerciseKey] || 0;
+            let isNewRecord = false;
+
+            if(count > currentPB) {
+                personalRecords[exerciseKey] = count;
+                localStorage.setItem('ahmed_personal_records', JSON.stringify(personalRecords));
+                isNewRecord = true;
+            }
+
+            const burnedCal = Math.round(count * (baseCal / 50));
+            workouts.push({
+                id: Date.now(),
+                name: `${exerciseDisplayName} (${count} ${exerciseKey === 'plank' ? 'ثانية' : 'عدة'})`,
+                burnedCalories: burnedCal > 0 ? burnedCal : 10
+            });
+            localStorage.setItem('ahmed_workouts', JSON.stringify(workouts));
+            syncToFirebase();
+            updateUI();
+            renderWorkoutStatesUI();
+
+            if(isNewRecord) {
+                alert(`🔥 مبروك يا أحمد! رقم قياسي جديد في ${exerciseDisplayName}: ${count}! وحرقت ${burnedCal > 0 ? burnedCal : 10} سعرة.`);
+            } else {
+                alert(`تم تسجيل تمرين "${exerciseDisplayName}" (${count}) وحرق ${burnedCal > 0 ? burnedCal : 10} سعرة بنجاح!`);
+            }
+            document.getElementById(inputId).value = '';
+        }
+
+        function addWorkout() {
+            const name = document.getElementById('workoutName').value.trim();
+            const burnedCalories = parseInt(document.getElementById('workoutCalories').value);
+
+            if(!name || isNaN(burnedCalories) || burnedCalories <= 0) {
+                alert('من فضلك ادخل اسم التمرين والسعرات المحروقة بشكل صحيح.');
+                return;
+            }
+
+            workouts.push({ id: Date.now(), name, burnedCalories });
+            localStorage.setItem('ahmed_workouts', JSON.stringify(workouts));
+            syncToFirebase();
+
+            document.getElementById('workoutName').value = '';
+            document.getElementById('workoutCalories').value = '';
+            document.getElementById('workoutPresetSelect').value = '';
+            updateUI();
+        }
+
+        function deleteWorkout(id) {
+            workouts = workouts.filter(item => item.id !== id);
+            localStorage.setItem('ahmed_workouts', JSON.stringify(workouts));
+            syncToFirebase();
+            updateUI();
+        }
+
+        // --- نظام تتبع المشي المستمر والدائم في الخلفية ---
+        let watchId = null;
+        let lastPosition = null;
+
+        function startBackgroundTracking() {
+            if ("geolocation" in navigator) {
+                if(watchId !== null) return;
+                watchId = navigator.geolocation.watchPosition(
+                    (position) => {
+                        if (lastPosition) {
+                            const dist = calculateDistance(
+                                lastPosition.coords.latitude, lastPosition.coords.longitude,
+                                position.coords.latitude, position.coords.longitude
+                            );
+                            if(dist < 0.5) {
+                                sessionDistance += dist;
+                                localStorage.setItem('ahmed_session_distance', sessionDistance);
+                                updateGpsDisplay();
+                                syncToFirebase();
+                            }
+                        }
+                        lastPosition = position;
+                    },
+                    (error) => { console.log('GPS background error:', error.message); },
+                    { enableHighAccuracy: true, maximumAge: 1000, timeout: 30000 }
+                );
+            }
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            return R * c; 
+        }
+
+        function updateGpsDisplay() {
+            const totalSteps = Math.round(sessionDistance * 1300);
+            const burnedCal = Math.round(sessionDistance * 60);
+
+            document.getElementById('gpsDistance').innerText = sessionDistance.toFixed(2) + " كم";
+            document.getElementById('gpsSteps').innerText = totalSteps + " خطوة";
+            document.getElementById('gpsBurned').innerText = burnedCal + " سعرة";
+        }
+
+        function stopAndSaveGpsWorkout() {
+            const totalSteps = Math.round(sessionDistance * 1300);
+            const burnedCal = Math.round(sessionDistance * 60);
+
+            if(burnedCal > 0) {
+                workouts.push({ 
+                    id: Date.now(), 
+                    name: `مشي GPS (${totalSteps} خطوة)`, 
+                    burnedCalories: burnedCal 
+                });
+                localStorage.setItem('ahmed_workouts', JSON.stringify(workouts));
+                sessionDistance = 0;
+                localStorage.setItem('ahmed_session_distance', 0);
+                syncToFirebase();
+                updateUI();
+                updateGpsDisplay();
+                alert(`تم حفظ المشي بنجاح! حرقت ${burnedCal} سعرة.`);
+            } else {
+                alert('لم تقطع مسافة كافية للحفظ.');
+            }
+        }
+
+        function resetGpsTracking() {
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            lastPosition = null;
+            sessionDistance = 0;
+            localStorage.setItem('ahmed_session_distance', 0);
+            updateGpsDisplay();
+        }
+
+        window.onload = () => {
+            initDeviceSession();
+            startBackgroundTracking();
+        };
+
+        function updateUI() {
+            const totalConsumed = foods.reduce((sum, item) => sum + item.calories, 0);
+            const totalBurned = workouts.reduce((sum, item) => sum + item.burnedCalories, 0);
+            const netCalories = dailyGoal - totalConsumed + totalBurned;
+
+            document.getElementById('totalConsumed').innerText = totalConsumed;
+            document.getElementById('totalBurned').innerText = totalBurned;
+            document.getElementById('netCalories').innerText = netCalories;
+
+            let percentage = (totalConsumed / dailyGoal);
+            if(percentage > 1) percentage = 1;
+            const dashOffset = 440 - (440 * percentage);
+            document.getElementById('circleProgress').style.strokeDashoffset = dashOffset;
+            document.getElementById('progressPercent').innerText = Math.round(percentage * 100) + '%';
+
+            const foodListEl = document.getElementById('foodList');
+            foodListEl.innerHTML = foods.length === 0 ? '<p style="text-align:center; color: var(--text-muted); font-size:0.8rem; padding: 10px;">لا يوجد أكل مسجل اليوم</p>' : '';
+            foods.slice().reverse().forEach(item => {
+                foodListEl.innerHTML += `
+                    <div class="list-item">
+                        <span><strong>${item.name}</strong> (${item.calories} سعرة)</span>
+                        <button class="delete-btn" onclick="deleteFood(${item.id})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+            });
+
+            const workoutListEl = document.getElementById('workoutList');
+            workoutListEl.innerHTML = workouts.length === 0 ? '<p style="text-align:center; color: var(--text-muted); font-size:0.8rem; padding: 10px;">لا توجد تمارين مسجلة اليوم</p>' : '';
+            workouts.slice().reverse().forEach(item => {
+                workoutListEl.innerHTML += `
+                    <div class="list-item">
+                        <span><strong>${item.name}</strong> (${item.burnedCalories} سعرة)</span>
+                        <button class="delete-btn" onclick="deleteWorkout(${item.id})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function screenShare() {
+            const captureElement = document.getElementById('capture-area');
+            html2canvas(captureElement, {
+                backgroundColor: '#090d16',
+                scale: 2,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'سعرات_أحمد_اليومية.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
